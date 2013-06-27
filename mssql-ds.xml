@@ -1,0 +1,72 @@
+<!-- for more parameters, see http://docs.redhat.com/docs/en-US/JBoss_Enterprise_Application_Platform/5/html-single/Administration_And_Configuration_Guide/index.html#id3333831 -->
+<datasources>
+ <local-tx-datasource>
+  <jndi-name>DefaultDS</jndi-name>
+	<connection-url>jdbc:sqlserver://sqlserver.example.com:1433;DatabaseName=database1;</connection-url>
+	<driver-class>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-class>
+	<!-- Windows logins can now be used
+	http://msdn.microsoft.com/en-us/library/gg558122.aspx -->
+	<user-name>x</user-name>
+	<password>y</password>
+	<metadata>
+		<!-- must match a mapping defined in conf/jboss/standardjbosscmp-jdbc.xml -->
+		<type-mapping>MS SQLSERVER2000</type-mapping>
+	</metadata>
+ 
+	<!-- you can include connection properties that will get passed in the DriverManager.getConnection(props) call-->
+	<!-- look at your Driver docs to see what these might be -->
+	<connection-property name="char.encoding">UTF-8</connection-property>
+	<!-- transaction-isolation>TRANSACTION_SERIALIZABLE</transaction-isolation -->
+	<transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
+	<prepared-statement-cache-size>100</prepared-statement-cache-size>
+	<shared-prepared-statements>true</shared-prepared-statements>
+
+	<!--pooling parameters-->
+	<min-pool-size>75</min-pool-size>
+	<max-pool-size>100</max-pool-size>
+	<blocking-timeout-millis>5000</blocking-timeout-millis>
+	<idle-timeout-minutes>15</idle-timeout-minutes>
+
+	<!-- sql to call when connection is created -->
+	<new-connection-sql>SELECT 1</new-connection-sql>
+	<!-- sql to call on an existing pooled connection when it is obtained from pool -->
+	<check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+	<set-tx-query-timeout></set-tx-query-timeout>
+	<query-timeout>300</query-timeout> <!-- maximum of 5 minutes for queries -->
+
+	<!-- pooling criteria. USE AT MOST ONE-->
+	<!-- If you don't use JAAS login modules or explicit login 
+	getConnection(usr,pw) but rely on user/pw specified above, 
+	don't specify anything here -->
+
+	<!-- If you supply the usr/pw from a JAAS login module -->
+	<!-- security-domain>MyRealm</security-domain -->
+
+	<!-- if your app supplies the usr/pw explicitly getConnection(usr, pw) -->
+	<application-managed-security></application-managed-security>
+
+	<!--Anonymous depends elements are copied verbatim into the ConnectionManager mbean config-->
+	<!-- depends>myapp.service:service=DoSomethingService</depends -->
+ </local-tx-datasource>
+ <!-- xa-datasource>
+	<!- http://msdn.microsoft.com/en-us/library/aa342335.aspx ->
+	<!- http://docs.redhat.com/docs/en-US/JBoss_Enterprise_Application_Platform/5/html-single/Administration_And_Configuration_Guide/index.html#id3510634 ->
+	<jndi-name>MSSQL2005XADS</jndi-name>
+	<track-connection-by-tx></track-connection-by-tx>
+	<isSameRM-override-value>false</isSameRM-override-value>
+	<xa-datasource-class>com.microsoft.sqlserver.jdbc.SQLServerXADataSource</xa-datasource-class>
+	<xa-datasource-property name="ServerName">sqlserver2.example.com</xa-datasource-property>
+	<xa-datasource-property name="DatabaseName">database2</xa-datasource-property>
+	<xa-datasource-property name="PortNumber">1433</xa-datasource-property>
+	<xa-datasource-property name="SelectMethod">cursor</xa-datasource-property>
+	<xa-datasource-property name="User">x</xa-datasource-property>
+	<xa-datasource-property name="Password">y</xa-datasource-property>
+	<xa-datasource-property name="IfxWAITTIME">10</xa-datasource-property>
+	<!- xa-datasource-property name="IfxIFXHOST">sqlserver2.example.com</xa-datasource-property ->
+	<transaction-isolation>TRANSACTION_SERIALIZABLE</transaction-isolation>
+	<!- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) ->
+	<metadata>
+		<type-mapping>MS SQLSERVER2000</type-mapping>
+	</metadata>
+ </xa-datasource -->
+</datasources>
